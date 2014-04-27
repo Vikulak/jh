@@ -1,0 +1,84 @@
+'
+    Jolt Programming Language
+    @author Nate Ferrero
+
+    Language Specification
+    ======================
+
+    There are 15 special characters, each of which may be escaped with a
+    backslash:
+
+    \ ' : , = - $ & { } [ ] ( ) #
+    =============================
+
+    \   escape character
+
+    '   string delimiter
+    :   key-value delimiter
+    ,   statement delimiter
+
+    =   command prefix
+    -   event prefix
+    $   variable prefix
+    &   inclusion prefix
+
+    {   opening block
+    }   closing block
+
+    [   opening list
+    ]   closing list
+
+    (   opening group
+    )   closing group
+
+    # line comment
+
+    Examples
+    ========
+
+    varName: string value
+    format: "$varName" should be "string value"
+    escaped: The total is: \$123.00
+    raw: 'This string is not $variable parsed'
+    escaped: \'tis the time to enjoy the sunrise
+    normal: Isn't this awesome\, no need to quote most strings.
+
+    { new: isolate scope }
+    { &include.from.first.matching }
+    { &.include.from.current.scope }
+    { &..include.from.parent.scope }
+    { &...etcetera }
+
+    list: [0, 1, 2, 300..400]
+
+    add(a, b): =+ $a $b
+
+    print(w: what): =out $what
+
+    result: =add a(4) b(50)
+
+    =out $result
+    =print w(result is $result)
+
+    =print what(result is $result!)
+    -ok =out Successfully printed
+
+    =command
+
+    =command arg0 arg1:val arg2(val) arg3[list] long{named: arguments} s{short: named}
+    -p result handler
+    -ok =out the command is complete
+'
+
+&http    # include http
+
+stdHeaders: {
+    X-Requested-By: jolt
+}
+
+url: http://www.apple.com
+
+=get $url h{Content-Type: application/json, &stdHeaders}
+
+-end =out $url
+-err =out $url
