@@ -8,27 +8,39 @@ This File Format:
 
 Meaningful characters:
 
-    A: any character (initial state)
     N: newline
     W: word boundary
+    A: any character (initial state)
+
+Only valid as a terminator:
+
+    E: Ends the parent block if the character is a valid end for that block
+    X: Fake end, does not move up stack, but may be used as a separator
 
 ========================================
 
-A ... \':=-$&{[(# ... ,N
+, ... X
+N ... X
+W ... E
+A ... \':=-$&{[(#}]),N ...
 
 \ ... A
 
 ' ... \$ ... '
 
-: ... \'=-${[(# ... ,N
+: ... \'=-${[(# ... }]),N
+
+} ... E
+] ... E
+) ... E
 
 = ... \' ... W
 - ... \' ... W
 $ ... \' ... W
 & ... \' ... W
 
-{ ... A ... }
-[ ... A ... ]
-( ... A ... )
+{ ... \':=-$&{[(#}]),N ... }
+[ ... \':=-$&{[(#}]),N ... ]
+( ... \':=-$&{[(#}]),N ... )
 
 # ... N
