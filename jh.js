@@ -3,10 +3,11 @@
  * @author Nate Ferrero
  */
 module.exports = (function (jh) {
-    doSpec();
-    doParse();
-    doFormatCode();
-    doConsole();
+
+    #include jh.code.format;
+    #include jh.console;
+    #include jh.parse;
+    #include jh.spec;
 
     return jh;
 
