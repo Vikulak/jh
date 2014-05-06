@@ -12,8 +12,3 @@ module.exports = (function (jh) {
     return jh;
 
 })({});
-
-/**
- * Start the console
- */
-module.exports.console();

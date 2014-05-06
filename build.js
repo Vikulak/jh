@@ -1,8 +1,20 @@
+/**
+ * [J]avaScript S[h]ell
+ * @author Nate Ferrero
+ *
+ * Build command: node build
+ */
+var jh_path = './jh.js';
+
 function read (x) {
-    return require("fs").readFileSync(x).toString();
+    return require('fs').readFileSync(x).toString();
 }
 
-var main = read("src/main.js")
+function write(x, data) {
+    return require('fs').writeFileSync(x, data);
+}
+
+var main = read('src/main.js')
     .replace(/([^\S\r\n]+)#include\s([\w.]+);/g, function (stmt, space, path) {
         var current = '';
         var lines = path.split('.').map(function (segment) {
@@ -18,4 +30,6 @@ var main = read("src/main.js")
         return str;
     });
 
-console.log(main);
+write(jh_path, main);
+
+console.log('[J]avaScript S[h]ell Built successfully!');

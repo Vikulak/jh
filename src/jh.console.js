@@ -27,7 +27,7 @@ function jh__console (jh) {
                     rl.prompt();
                     return;
                 }
-                console.log(jh.formatCode(code));
+                console.log(jh.code.format(code));
             }
             catch (e) {
                 console.error('[error] ' + e.message);
@@ -36,8 +36,8 @@ function jh__console (jh) {
             rl.prompt();
         });
         rl.on('close', function() {
-          console.log('\nExiting JavaScript Shell');
-          //process.exit(0);
+          console.log('\n@Exit'.replace('@', defaultPrompt));
+          process.exit(0);
         });
         rl.prompt();
     };
