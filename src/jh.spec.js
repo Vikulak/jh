@@ -1,31 +1,50 @@
 function jh__spec (jh) {
-
     var spec = {};
 
-    var a_s_o = function (s, i) {
-        var r = {};
-        s[i].split('').forEach(function (m) {
-            r[m] = true;
-        });
-        return r;
+    var def = function (name, opts) {
+        opts.name = name; spec[name] = opts; return name;
     };
 
-    require('fs').readFileSync('jh.spec').toString().split('=\n')[1].split('\n')
-    .filter(function (x) {return x.trim().length}).forEach(function (line) {
-        var block = line.split('...').map(function (x) {
-            return x.trim();
-        });
-        switch(block.length) {
-            case 2:
-                spec[block[0]] = {end: a_s_o(block, 1)};
-                break;
-            case 3:
-                spec[block[0]] = {sub: a_s_o(block, 1), end: a_s_o(block, 2)};
-                break;
-            default:
-                throw Error('Invalid jh.spec statement: ' + line);
-        }
-    });
+    /**
+     * Allowed spec properties:
+     *
+     * error            array               Chars that should produce a SyntaxError.
+     * open             string OR array     Char(s) that should open this block.
+     * close            string OR array     Char(s) that should close this block.
+     * closeIdentical   boolean             Close automatically on same sequence as opened with.
+     * capture          integer             Capture a number of characters, then close.
+     * captureWord      boolean             Capture the next word. Breaks on special chars.
+     * self             string              Character to capture.
+     * restrict         array               Allow child blocks of these types only.
+     */
+
+    def('global',   { error: ['}', ']', ')'] }              );
+
+    def('comment',  { open: '#', close: '\n' }              );
+
+    def('escape',   { open: '\\', capture: 1 }              );
+
+    def('variable', { open: '$', captureWord: true }        );
+
+    def('object',   { open: '{', close: '}' }               );
+
+    def('array',    { open: '[', close: ']' }               );
+
+    def('group',    { open: '(', close: ')' }               );
+
+    def('break',    { self: ',' }                           );
+
+    def('command',  { self: '=' }                           );
+
+    def('define',   { self: ':' }                           );
+
+    def('option',   { self: '-' }                           );
+
+    def('include',  { self: '&' }                           );
+
+    def('string',   { open: ['"""', "'''", '"', "'"],
+                      closeIdentical: true,
+                      restrict: ['escape', 'variable'] }    );
 
     return spec;
 }

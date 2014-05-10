@@ -19,7 +19,7 @@ function jh__console (jh) {
             }
             try {
                 str += '\n';
-                var code = jh.parse(str);
+                var code = jh.tokenize(str);
                 if (typeof code === 'string') {
                     more = true;
                     buffer = str;
@@ -31,6 +31,7 @@ function jh__console (jh) {
             }
             catch (e) {
                 console.error('[error] ' + e.message);
+                throw e;
             }
             rl.setPrompt(defaultPrompt);
             rl.prompt();

@@ -26,7 +26,8 @@ var main = read('src/main.js')
                 read('src/' + path + '.js').trim()
                 .replace(/\n/g, function (m) {
                     return m + space;
-                }));
+                })
+                .replace(/\$/g, '$$$$') /* IMPORTANT */);
         return str;
     });
 
