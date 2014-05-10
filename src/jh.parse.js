@@ -100,7 +100,14 @@ function jh__parse (jh) {
                     case 'W':
                         // allow new sub immediately
                         break;
+                    case 'A':
+                        continue next;
                     default:
+                        var endType = jh.spec[end.m] && jh.spec[end.m].end &&
+                            jh.spec[end.m].end.E ? 'E' : null;
+                        if (endType === 'E') {
+                            tree = up(stack);
+                        }
                         continue next;
                 }
             }
