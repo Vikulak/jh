@@ -53,9 +53,10 @@ function jh__treestack (jh) {
         };
 
         ts.queue = function (x) {
-            typeof this.tree.q === 'string' || (
-                this.tree.q = ''
-            );
+            if (typeof this.tree.q !== 'string') {
+                this.tree.q = '';
+                this.__template = this._template();
+            }
             this.tree.q += x;
         };
 

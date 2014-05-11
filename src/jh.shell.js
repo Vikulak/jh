@@ -25,11 +25,12 @@ function jh__shell (jh) {
                 var code, showTokens = false;
 
                 if (str.substr(0, 2) === 't!') {
-                    code = jh.tokenize(str.substr(2).trim());
+                    code = jh.tokenize(str.substr(2));
                     showTokens = true;
                 }
+
                 else {
-                    code = jh.tokenize(str.trim());
+                    code = jh.tokenize(str);
                 }
 
                 /**
@@ -48,7 +49,9 @@ function jh__shell (jh) {
                 }
 
                 else {
-                    print(jh.command(global, 'execute', {code: code._}));
+                    if (code._ && code._.length) {
+                        print(jh.command(global, 'execute', {code: code._}));
+                    }
                 }
             }
             catch (e) {

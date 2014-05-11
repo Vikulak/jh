@@ -18,33 +18,41 @@ function jh__spec (jh) {
      * restrict         array               Allow child blocks of these types only.
      */
 
-    def('global',   { error: ['}', ']', ')'] }                  );
+    def('global',       { error: ['}', ']', ')'] }              );
 
-    def('comment',  { open: '#', close: '\n' }                  );
+    def('comment',      { open: '#', close: '\n' }              );
 
-    def('escape',   { open: '\\', capture: 1 }                  );
+    def('escape',       { open: '\\', capture: 1 }              );
 
-    def('variable', { open: '$', captureUntil: [' ', '\n'] }    );
+    def('variable',     { open: '$', captureUntil: [
+                          '\\', ';', ' ', '\n'
+                        ] }                                     );
 
-    def('option',   { open: '-', captureUntil: [' ', '\n'] }    );
+    def('command',      { open: '=', captureUntil: [
+                          '\\', ' ', '\n'
+                        ] }                                     );
 
-    def('object',   { open: '{', close: '}' }                   );
+    def('option',       { open: '-', captureUntil: [
+                          '\\', ' ', '\n'
+                        ] }                                     );
 
-    def('array',    { open: '[', close: ']' }                   );
+    def('object',       { open: '{', close: '}' }               );
 
-    def('group',    { open: '(', close: ')' }                   );
+    def('array',        { open: '[', close: ']' }               );
 
-    def('break',    { self: ',' }                               );
+    def('group',        { open: '(', close: ')' }               );
 
-    def('command',  { self: '=' }                               );
+    def('break',        { self: ',' }                           );
 
-    def('define',   { self: ':' }                               );
+    def('terminate',    { self: ';' }                           );
 
-    def('include',  { self: '&' }                               );
+    def('define',       { self: ':' }                           );
 
-    def('string',   { open: ['"""', "'''", '"', "'"],
-                      closeIdentical: true,
-                      restrict: ['escape', 'variable'] }        );
+    def('include',      { self: '&' }                           );
+
+    def('string',       { open: ['"""', "'''", '"', "'"],
+                          closeIdentical: true,
+                          restrict: ['escape', 'variable'] }    );
 
     return spec;
 }

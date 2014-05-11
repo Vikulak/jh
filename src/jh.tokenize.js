@@ -8,9 +8,10 @@ function jh__tokenize (jh) {
          * m: mode
          * o: open
          * _: branches
-         * $: information
+         * $: location
          */
-        var tree = new jh.treestack({'m': 'global', $: {pos: 0, line: 1, col: 1}});
+        var tree = new jh.treestack({'m': 'global'});
+        var key, testSpec, match, capture = 0, captureUntil;
 
         /**
          * Stringloop
@@ -28,9 +29,34 @@ function jh__tokenize (jh) {
 
             /**
              * Options: error open close closeIdentical
-             * capture captureWord self restrict
+             * capture captureUntil self restrict
              */
-            var key, testSpec, match, content, current = jh.spec[tree.get('m')];
+            var current = jh.spec[tree.get('m')];
+
+            /**
+             * If a capture is in operation, do that before normal process
+             */
+            if (capture > 0) {
+                tree.queue(chr);
+                capture --;
+                if (capture === 0) {
+                    tree.up();
+                }
+                return;
+            }
+
+            /**
+             * If a captureUntil is in operation, do that before normal process
+             */
+            if (captureUntil) {
+                match = op.match(captureUntil);
+                if (match) {
+                    tree.up();
+                    captureUntil = null;
+                } else {
+                    return tree.queue(chr);
+                }
+            }
 
             /**
              * 1 - Check for current close character
@@ -75,30 +101,21 @@ function jh__tokenize (jh) {
                      */
                     match = op.match(testSpec.self);
                     if (match) {
-                        tree.branch({'m': key, 'o': match, '$': op.info()});
+                        tree.branch({'m': key, 'o': match, '$': op.location()});
                         return tree.up();
                     }
                 }
                 else if (testSpec.open) {
                     match = op.match(testSpec.open);
                     if (match) {
-                        tree.branch({'m': key, 'o': match, '$': op.info()});
+                        tree.branch({'m': key, 'o': match, '$': op.location()});
 
-                        /**
-                         * Check auto capture
-                         */
-                        content = null;
                         if (testSpec.capture) {
-                            content = op.captureCount(testSpec.capture);
+                            capture = testSpec.capture;
                         }
 
                         else if (testSpec.captureUntil) {
-                            content = op.captureUntil(testSpec.captureUntil);
-                        }
-
-                        if (content !== null) {
-                            tree.queue(content);
-                            tree.up();
+                            captureUntil = testSpec.captureUntil;
                         }
 
                         return;
@@ -128,6 +145,13 @@ function jh__tokenize (jh) {
              */
             tree.queue(chr);
         });
+
+        /**
+         * If ending where a \n will close, do it
+         */
+        if (captureUntil && captureUntil.indexOf('\n') !== -1) {
+            tree.up();
+        }
 
         /**
          * If the stack is not closed, indicate

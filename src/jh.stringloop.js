@@ -52,39 +52,6 @@ function jh__stringloop (jh) {
         };
 
         /**
-         * Advance and capture a number of characters
-         */
-        op.captureCount = function (count) {
-            advance += count;
-            return str.substr(pos, count);
-        };
-
-        /**
-         * Capture until a specific match is met
-         */
-        op.captureUntil = function (matches) {
-            Array.isArray(matches) || (
-                matches = [matches]
-            );
-            var found = Infinity;
-            for(var i = 0; i < matches.length; i++) {
-                var f = str.indexOf(matches[i], pos);
-                if (f > -1) {
-                    found = Math.min(found, f);
-                }
-            }
-
-            if (found === Infinity) {
-                var result = str.substring(pos + 1);
-                pos = str.length;
-                return result;
-            }
-
-            advance += found - pos;
-            return str.substring(pos + 1, found);
-        };
-
-        /**
          * Loop though string
          */
         for (pos = 0; pos < str.length; pos ++) {
