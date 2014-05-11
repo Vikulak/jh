@@ -18,33 +18,33 @@ function jh__spec (jh) {
      * restrict         array               Allow child blocks of these types only.
      */
 
-    def('global',   { error: ['}', ']', ')'] }              );
+    def('global',   { error: ['}', ']', ')'] }                  );
 
-    def('comment',  { open: '#', close: '\n' }              );
+    def('comment',  { open: '#', close: '\n' }                  );
 
-    def('escape',   { open: '\\', capture: 1 }              );
+    def('escape',   { open: '\\', capture: 1 }                  );
 
-    def('variable', { open: '$', captureWord: true }        );
+    def('variable', { open: '$', captureUntil: [' ', '\n'] }    );
 
-    def('object',   { open: '{', close: '}' }               );
+    def('option',   { open: '-', captureUntil: [' ', '\n'] }    );
 
-    def('array',    { open: '[', close: ']' }               );
+    def('object',   { open: '{', close: '}' }                   );
 
-    def('group',    { open: '(', close: ')' }               );
+    def('array',    { open: '[', close: ']' }                   );
 
-    def('break',    { self: ',' }                           );
+    def('group',    { open: '(', close: ')' }                   );
 
-    def('command',  { self: '=' }                           );
+    def('break',    { self: ',' }                               );
 
-    def('define',   { self: ':' }                           );
+    def('command',  { self: '=' }                               );
 
-    def('option',   { self: '-' }                           );
+    def('define',   { self: ':' }                               );
 
-    def('include',  { self: '&' }                           );
+    def('include',  { self: '&' }                               );
 
     def('string',   { open: ['"""', "'''", '"', "'"],
                       closeIdentical: true,
-                      restrict: ['escape', 'variable'] }    );
+                      restrict: ['escape', 'variable'] }        );
 
     return spec;
 }

@@ -31,7 +31,6 @@ function jh__console (jh) {
             }
             catch (e) {
                 console.error('[error] ' + e.message);
-                throw e;
             }
             rl.setPrompt(defaultPrompt);
             rl.prompt();
