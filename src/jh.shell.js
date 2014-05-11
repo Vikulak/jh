@@ -48,7 +48,7 @@ function jh__shell (jh) {
                 }
 
                 else {
-                    print(jh.command(global, 'execute', {code: code}));
+                    print(jh.command(global, 'execute', {code: code._}));
                 }
             }
             catch (e) {

@@ -19,9 +19,9 @@ function jh__tokenize (jh) {
 
             tree.template(
                 function () {
-                    var info = op.info();
+                    var location = op.location();
                     return function (x) {
-                        return {'m': 'expr', 'o': x, '$': info};
+                        return {'m': 'expr', 'o': x, '$': location};
                     };
                 }
             );

@@ -12,6 +12,13 @@ function jh__stringloop (jh) {
         };
 
         /**
+         * Get formatted location
+         */
+        op.location = function () {
+            return info.line + ':' + info.col;
+        };
+
+        /**
          * Report a syntax error
          */
         op.error = function (e, type) {
@@ -23,8 +30,8 @@ function jh__stringloop (jh) {
                 ctx += p === pos ? '⌜' + str[p] + '⌟' : str[p];
             }
             ctx = (pos > w ? '...' : '') + ctx + (pos < str.length - w - 1 ? '...' : '');
-            e = (type || SyntaxError)(e + ' near ' + ctx.trim() + ' @ ' + info.line + ':' + info.col);
-            e.$ = op.info();
+            e = (type || SyntaxError)(e + ' near ' + ctx.trim() + ' @ ' + op.location());
+            e.$info = op.info();
             return e;
         };
 
