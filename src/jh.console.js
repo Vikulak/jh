@@ -5,32 +5,54 @@ function jh__console (jh) {
           output: process.stdout,
           completer: null /* TODO tab completion */
         });
-        var defaultPrompt = '[jh] | ';
+        var defaultPrompt = 'jh ▎';
         rl.setPrompt(defaultPrompt);
         var buffer = '';
         var more = false;
+        var global = {};
+        var print = function (x)  {
+            console.log('  ▶▎' + x);
+        };
         rl.on('line', function (str) {
             if (more) {
-                str = buffer + str;
+                str = buffer + '\n' + str;
                 more = false;
             }
             else {
                 buffer = '';
             }
             try {
-                str += '\n';
-                var code = jh.tokenize(str);
+                var code, showTokens = false;
+
+                if (str.substr(0, 2) === 't!') {
+                    code = jh.tokenize(str.substr(2).trim());
+                    showTokens = true;
+                }
+                else {
+                    code = jh.tokenize(str.trim());
+                }
+
+                /**
+                 * Accumulate more as needed until all blocks are closed
+                 */
                 if (typeof code === 'string') {
                     more = true;
                     buffer = str;
-                    rl.setPrompt(' ...' + ' ' + code + ' ');
+                    rl.setPrompt('   ▎' + code + ' ∙∙∙ ');
                     rl.prompt();
                     return;
                 }
-                console.log(jh.code.format(code));
+
+                if (showTokens) {
+                    print('Tokenized: ' + jh.code.format(code));
+                }
+
+                else {
+                    print(jh.command(global, 'execute', {code: code}));
+                }
             }
             catch (e) {
-                console.error('[error] ' + e.message);
+                console.error('  ■▎Error: ' + e.message);
             }
             rl.setPrompt(defaultPrompt);
             rl.prompt();

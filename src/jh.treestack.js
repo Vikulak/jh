@@ -49,6 +49,7 @@ function jh__treestack (jh) {
         ts.append = function (x) {
             Array.isArray(this.tree._) || (this.tree._ = []);
             this.tree._.push(x);
+            this.update_template = true;
         };
 
         ts.queue = function (x) {
@@ -59,17 +60,19 @@ function jh__treestack (jh) {
         };
 
         ts.template = function (t) {
-            if (!this._template) {
-                this._template = t();
+            if (!this._template || this.update_template) {
+                this._template = t;
+                this.__template = this._template();
+                this.update_template = false;
             }
         };
 
         ts.flushQueue = function () {
-            if (typeof this.tree.q === 'string' && this.tree.q.trim().length) {
-                if (!this._template) {
+            if (typeof this.tree.q === 'string' && this.tree.q.length) {
+                if (!this.__template) {
                     throw new Error('No template found when flushing queue');
                 }
-                this.append(this._template(this.tree.q.trim()));
+                this.append(this.__template(this.tree.q));
             }
             delete this.tree.q;
         };

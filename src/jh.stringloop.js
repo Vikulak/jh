@@ -20,10 +20,10 @@ function jh__stringloop (jh) {
                 if (p < 0 || p >= str.length) {
                     continue;
                 }
-                ctx += p === pos ? '' + str[p] + '<--' : str[p];
+                ctx += p === pos ? '⌜' + str[p] + '⌟' : str[p];
             }
             ctx = (pos > w ? '...' : '') + ctx + (pos < str.length - w - 1 ? '...' : '');
-            e = (type || SyntaxError)(e + ' near ' + ctx + ' @ ' + info.line + ':' + info.col);
+            e = (type || SyntaxError)(e + ' near ' + ctx.trim() + ' @ ' + info.line + ':' + info.col);
             e.$ = op.info();
             return e;
         };
@@ -68,7 +68,9 @@ function jh__stringloop (jh) {
             }
 
             if (found === Infinity) {
-                throw new Error("No termination sequence found for capture");
+                var result = str.substring(pos + 1);
+                pos = str.length;
+                return result;
             }
 
             advance += found - pos;

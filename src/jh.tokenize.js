@@ -17,11 +17,14 @@ function jh__tokenize (jh) {
          */
         jh.stringloop(str, function (chr, op) {
 
-            tree.template(function () {
-                return function (x) {
-                    return {'m': 'expr', 'o': x, '$': op.info()};
-                };
-            });
+            tree.template(
+                function () {
+                    var info = op.info();
+                    return function (x) {
+                        return {'m': 'expr', 'o': x, '$': info};
+                    };
+                }
+            );
 
             /**
              * Options: error open close closeIdentical
@@ -93,7 +96,7 @@ function jh__tokenize (jh) {
                             content = op.captureUntil(testSpec.captureUntil);
                         }
 
-                        if (content) {
+                        if (content !== null) {
                             tree.queue(content);
                             tree.up();
                         }
@@ -106,6 +109,19 @@ function jh__tokenize (jh) {
             /**
              * 4 - Check for errors
              */
+            if (current.error) {
+                match = op.match(current.error);
+                if (match) {
+                    throw op.error("Unexpected " + match);
+                }
+            }
+
+            else if (jh.spec.global.error) {
+                match = op.match(jh.spec.global.error);
+                if (match) {
+                    throw op.error("Unexpected " + match);
+                }
+            }
 
             /**
              * 5 - Add to queue
