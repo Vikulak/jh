@@ -11,7 +11,7 @@ function jh__tokenize (jh) {
          * $: location
          */
         var tree = new jh.treestack({'m': 'global'});
-        var key, testSpec, match, capture = 0, captureUntil;
+        var key, testSpec, match, capture = 0, current;
 
         /**
          * Stringloop
@@ -28,12 +28,6 @@ function jh__tokenize (jh) {
             );
 
             /**
-             * Options: error open close closeIdentical
-             * capture captureUntil self restrict
-             */
-            var current = jh.spec[tree.get('m')];
-
-            /**
              * If a capture is in operation, do that before normal process
              */
             if (capture > 0) {
@@ -46,20 +40,24 @@ function jh__tokenize (jh) {
             }
 
             /**
-             * If a captureUntil is in operation, do that before normal process
+             * Options: error open close closeIdentical
+             * capture until self restrict
              */
-            if (captureUntil) {
-                match = op.match(captureUntil);
+            current = jh.spec[tree.get('m')];
+
+            /**
+             * 0 - Check for current until sequence(s)
+             */
+            if (current.until) {
+                match = op.match(current.until, false);
                 if (match) {
-                    tree.up();
-                    captureUntil = null;
-                } else {
-                    return tree.queue(chr);
+                    tree.up(); // no return here
+                    current = jh.spec[tree.get('m')];
                 }
             }
 
             /**
-             * 1 - Check for current close character
+             * 1 - Check for current close sequence(s)
              */
             if (current.close) {
                 match = op.match(current.close);
@@ -114,10 +112,6 @@ function jh__tokenize (jh) {
                             capture = testSpec.capture;
                         }
 
-                        else if (testSpec.captureUntil) {
-                            captureUntil = testSpec.captureUntil;
-                        }
-
                         return;
                     }
                 }
@@ -146,10 +140,12 @@ function jh__tokenize (jh) {
             tree.queue(chr);
         });
 
+        current = jh.spec[tree.get('m')];
+
         /**
          * If ending where a \n will close, do it
          */
-        if (captureUntil && captureUntil.indexOf('\n') !== -1) {
+        if (current.until && current.until.indexOf('\n') !== -1) {
             tree.up();
         }
 

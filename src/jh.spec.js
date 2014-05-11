@@ -10,10 +10,10 @@ function jh__spec (jh) {
      *
      * error            array               Chars that should produce a SyntaxError.
      * open             string OR array     Char(s) that should open this block.
+     * until            string OR array     Char(s) that should close this block and persist.
      * close            string OR array     Char(s) that should close this block.
      * closeIdentical   boolean             Close automatically on same sequence as opened with.
      * capture          integer             Capture a number of characters, then close.
-     * captureWord      boolean             Capture the next word. Breaks on special chars.
      * self             string              Character to capture.
      * restrict         array               Allow child blocks of these types only.
      */
@@ -24,17 +24,14 @@ function jh__spec (jh) {
 
     def('escape',       { open: '\\', capture: 1 }              );
 
-    def('variable',     { open: '$', captureUntil: [
-                          '\\', ';', ' ', '\n'
-                        ] }                                     );
+    def('variable',     { open: '$', restrict: ['escape'],
+                          until: [' ', '\n', ':'], close: ';' } );
 
-    def('command',      { open: '=', captureUntil: [
-                          '\\', ' ', '\n'
-                        ] }                                     );
+    def('command',      { open: '=', restrict: ['escape'],
+                          until: [' ', '\n', ':'] }             );
 
-    def('option',       { open: '-', captureUntil: [
-                          '\\', ' ', '\n'
-                        ] }                                     );
+    def('option',       { open: '-', restrict: ['escape'],
+                          until: [' ', '\n', ':'] }             );
 
     def('object',       { open: '{', close: '}' }               );
 

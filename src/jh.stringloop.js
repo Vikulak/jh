@@ -38,14 +38,16 @@ function jh__stringloop (jh) {
         /**
          * Advance on any matching substring
          */
-        op.match = function (choices) {
+        op.match = function (choices, adv) {
             Array.isArray(choices) || (
                 choices = [choices]
             );
             for (var i = 0; i < choices.length; i++) {
                 var len = choices[i].length;
                 if (choices[i] === str.substr(pos, len)) {
-                    advance += len;
+                    if (adv !== false) {
+                        advance += len;
+                    }
                     return choices[i];
                 }
             }
