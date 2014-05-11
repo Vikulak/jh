@@ -1,5 +1,5 @@
-function jh__console (jh) {
-    return function jh__console () {
+function jh__shell (jh) {
+    return function jh__shell () {
         var rl = require('readline').createInterface({
           input: process.stdin,
           output: process.stdout,
