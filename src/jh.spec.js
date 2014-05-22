@@ -33,11 +33,11 @@ function jh__spec (jh) {
     def('option',       { open: '-', restrict: ['escape'],
                           until: [' ', '\n', ':'] }             );
 
-    def('object',       { open: '{', close: '}' }               );
+    def('deferred',     { open: '{', close: '}' }               );
 
     def('array',        { open: '[', close: ']' }               );
 
-    def('group',        { open: '(', close: ')' }               );
+    def('object',       { open: '(', close: ')' }               );
 
     def('break',        { self: ',' }                           );
 
