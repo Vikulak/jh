@@ -20,7 +20,7 @@ function jh__spec (jh) {
 
     def('global',       { error: ['}', ']', ')'] }              );
 
-    def('comment',      { open: '#', close: '\n' }              );
+    def('comment',      { open: '#', close: '\n', error: [] }   );
 
     def('escape',       { open: '\\', capture: 1 }              );
 
@@ -48,7 +48,7 @@ function jh__spec (jh) {
     def('include',      { self: '&' }                           );
 
     def('string',       { open: ['"""', "'''", '"', "'"],
-                          closeIdentical: true,
+                          closeIdentical: true, error: [],
                           restrict: ['escape', 'variable'] }    );
 
     return spec;

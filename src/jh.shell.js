@@ -1,11 +1,9 @@
 function jh__shell (jh) {
     return function jh__shell () {
-        var rl = require('readline').createInterface({
-          input: process.stdin,
-          output: process.stdout,
-          completer: null /* TODO tab completion */
-        });
 
+        /**
+         * Default Shell Variables
+         */
         jh.$shell = jh.fn.defaults(jh.$shell, {
             prompt: {
                 in: (function () {
@@ -21,6 +19,12 @@ function jh__shell (jh) {
                     return '  ■▎Error: ';
                 })()
             }
+        });
+
+        var rl = require('readline').createInterface({
+          input: process.stdin,
+          output: process.stdout,
+          completer: null /* TODO tab completion */
         });
 
         rl.setPrompt(jh.$shell.prompt.in);
@@ -39,11 +43,16 @@ function jh__shell (jh) {
                 buffer = '';
             }
             try {
-                var code, showTokens = false;
+                var code, showTokens = false, showCode = false;
 
                 if (str.substr(0, 2) === 't!') {
                     code = jh.tokenize(str.substr(2));
                     showTokens = true;
+                }
+
+                else if (str.substr(0, 2) === 'c!') {
+                    code = jh.tokenize(str.substr(2));
+                    showCode = true;
                 }
 
                 else {
@@ -65,6 +74,10 @@ function jh__shell (jh) {
                     print('Tokenized: ' + jh.code.format(code));
                 }
 
+                else if (showCode) {
+                    print('Raw Code: ' + JSON.stringify(code));
+                }
+
                 else {
                     if (code._ && code._.length) {
                         print(jh.command(global, 'execute', {code: code._}));
@@ -78,8 +91,9 @@ function jh__shell (jh) {
             rl.prompt();
         });
         rl.on('close', function() {
-          print('Exit');
-          process.exit(0);
+            console.log('');
+            print('Exit');
+            process.exit(0);
         });
         rl.prompt();
     };

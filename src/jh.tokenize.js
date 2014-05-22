@@ -143,9 +143,16 @@ function jh__tokenize (jh) {
         current = jh.spec[tree.get('m')];
 
         /**
-         * If ending where a \n will close, do it
+         * If ending where a \n will close, do it (until)
          */
         if (current.until && current.until.indexOf('\n') !== -1) {
+            tree.up();
+        }
+
+        /**
+         * If ending where a \n will close, do it (close)
+         */
+        else if (current.close && current.close.indexOf('\n') !== -1) {
             tree.up();
         }
 
