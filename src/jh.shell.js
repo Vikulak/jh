@@ -5,13 +5,30 @@ function jh__shell (jh) {
           output: process.stdout,
           completer: null /* TODO tab completion */
         });
-        var defaultPrompt = 'jh ▎';
-        rl.setPrompt(defaultPrompt);
+
+        jh.$shell = jh.fn.defaults(jh.$shell, {
+            prompt: {
+                in: (function () {
+                    return 'jh ▎';
+                })(),
+                part: (function () {
+                    return '   ▎';
+                })(),
+                out: (function () {
+                    return '  ▶▎';
+                })(),
+                err: (function () {
+                    return '  ■▎Error: ';
+                })()
+            }
+        });
+
+        rl.setPrompt(jh.$shell.prompt.in);
         var buffer = '';
         var more = false;
         var global = {};
         var print = function (x)  {
-            console.log('  ▶▎' + x);
+            console.log(jh.$shell.prompt.out + x);
         };
         rl.on('line', function (str) {
             if (more) {
@@ -39,7 +56,7 @@ function jh__shell (jh) {
                 if (typeof code === 'string') {
                     more = true;
                     buffer = str;
-                    rl.setPrompt('   ▎' + code + ' ∙∙∙ ');
+                    rl.setPrompt(jh.$shell.prompt.part + code + ' ∙∙∙ ');
                     rl.prompt();
                     return;
                 }
@@ -55,13 +72,13 @@ function jh__shell (jh) {
                 }
             }
             catch (e) {
-                console.error('  ■▎Error: ' + e.message);
+                console.error(jh.$shell.prompt.err + e.message);
             }
-            rl.setPrompt(defaultPrompt);
+            rl.setPrompt(jh.$shell.prompt.in);
             rl.prompt();
         });
         rl.on('close', function() {
-          console.log('\n@Exit'.replace('@', defaultPrompt));
+          print('Exit');
           process.exit(0);
         });
         rl.prompt();

@@ -6,6 +6,7 @@ module.exports = (function (jh) {
 
     #include jh.code.format;
     #include jh.command;
+    #include jh.fn;
     #include jh.include;
     #include jh.shell;
     #include jh.spec;
