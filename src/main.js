@@ -4,8 +4,11 @@
  */
 module.exports = (function (jh) {
 
+    #include jh.code.error;
     #include jh.code.format;
+    #include jh.colors;
     #include jh.command;
+    #include jh.error.format;
     #include jh.fn;
     #include jh.include;
     #include jh.shell;
@@ -13,7 +16,6 @@ module.exports = (function (jh) {
     #include jh.stringloop;
     #include jh.tokenize;
     #include jh.treestack;
-    #include jh.type;
 
     return jh;
 

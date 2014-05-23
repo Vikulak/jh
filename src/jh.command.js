@@ -1,7 +1,7 @@
 function jh__command (jh) {
 
     return function jh__command (scope, name, options) {
-        var type = jh.type(scope);
+        var type = jh.fn.type(scope);
         var module = jh.include('type.' + type);
         if (!module.command || !module.command[name]) {
             throw new Error('Module for type ' + type + ' has no command "' + name + '"');

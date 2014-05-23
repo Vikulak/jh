@@ -39,5 +39,21 @@ function jh__fn (jh) {
         return fn.fill(fn.isObj(x) ? x : {}, defaults);
     };
 
+    fn.type = function (obj) {
+        if (obj === null) {
+            return 'null';
+        }
+        if (typeof obj === 'function') {
+            return 'command';
+        }
+        if (Array.isArray(obj)) {
+            return 'array';
+        }
+        if (obj && obj.$type) {
+            return obj.$type;
+        }
+        return typeof obj;
+    };
+
     return fn;
 }

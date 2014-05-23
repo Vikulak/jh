@@ -24,14 +24,14 @@ function jh__spec (jh) {
 
     def('escape',       { open: '\\', capture: 1 }              );
 
-    def('variable',     { open: '$', restrict: ['escape'],
-                          until: [' ', '\n', ':'], close: ';' } );
+    def('variable',     { open: '$', restrict: ['escape', 'object', 'array', 'deferred'],
+                          until: [' ', '\n', ':', ','], close: ';' } );
 
     def('command',      { open: '=', restrict: ['escape'],
-                          until: [' ', '\n', ':'] }             );
+                          until: [' ', '\n', ':', ','] }        );
 
     def('option',       { open: '-', restrict: ['escape'],
-                          until: [' ', '\n', ':'] }             );
+                          until: [' ', '\n', ':', ','] }        );
 
     def('deferred',     { open: '{', close: '}' }               );
 

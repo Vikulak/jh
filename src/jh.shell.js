@@ -5,18 +5,24 @@ function jh__shell (jh) {
          * Default Shell Variables
          */
         jh.$shell = jh.fn.defaults(jh.$shell, {
+            colors: {
+                in:     jh.colors.grey,
+                part:   jh.colors.grey,
+                out:    jh.colors.default,
+                err:    jh.colors.red
+            },
             prompt: {
                 in: (function () {
-                    return 'jh ▎';
+                    return 'jh ┇ ';
                 })(),
                 part: (function () {
-                    return '   ▎';
+                    return '   ┇ ';
                 })(),
                 out: (function () {
-                    return '  ▶▎';
+                    return '  ▶┇ ';
                 })(),
                 err: (function () {
-                    return '  ■▎Error: ';
+                    return '  ■┇ Error: ';
                 })()
             }
         });
@@ -27,13 +33,30 @@ function jh__shell (jh) {
           completer: null /* TODO tab completion */
         });
 
-        rl.setPrompt(jh.$shell.prompt.in);
+        /**
+         * Adjust prompt length based on color sequences
+         */
+        var stripColors = function (str) {
+            return str.replace(/\033\[[^m]+m/g, '');
+        };
+        rl._setPrompt = rl.setPrompt;
+        rl.setPrompt = function(prompt, length) {
+            rl._setPrompt(prompt, length ? length : stripColors(prompt.split(/[\r\n]/).pop()).length);
+        };
+
+        rl.setPrompt(jh.style(jh.$shell.prompt.in, jh.$shell.colors.in));
         var buffer = '';
         var more = false;
         var global = {};
+
         var print = function (x)  {
-            console.log(jh.$shell.prompt.out + x);
+            console.log(jh.style(jh.$shell.prompt.out + x, jh.$shell.colors.out));
         };
+
+        var print_err = function (x) {
+            console.error(jh.style(jh.$shell.prompt.err + x, jh.$shell.colors.err));
+        }
+
         rl.on('line', function (str) {
             if (more) {
                 str = buffer + '\n' + str;
@@ -65,7 +88,7 @@ function jh__shell (jh) {
                 if (typeof code === 'string') {
                     more = true;
                     buffer = str;
-                    rl.setPrompt(jh.$shell.prompt.part + code + ' ∙∙∙ ');
+                    rl.setPrompt(jh.style(jh.$shell.prompt.part, jh.$shell.colors.part) + code + ' ∙∙∙ ');
                     rl.prompt();
                     return;
                 }
@@ -85,9 +108,9 @@ function jh__shell (jh) {
                 }
             }
             catch (e) {
-                console.error(jh.$shell.prompt.err + e.message);
+                print_err(jh.error.format(e));
             }
-            rl.setPrompt(jh.$shell.prompt.in);
+            rl.setPrompt(jh.style(jh.$shell.prompt.in, jh.$shell.colors.in));
             rl.prompt();
         });
         rl.on('close', function() {

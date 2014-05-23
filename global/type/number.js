@@ -1,4 +1,4 @@
-module.exports = function type__array (jh) {
+module.exports = function type__number (jh) {
 
     return {
 

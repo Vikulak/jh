@@ -21,18 +21,10 @@ function jh__stringloop (jh) {
         /**
          * Report a syntax error
          */
-        op.error = function (e, type) {
-            var ctx = '', w = 10;
-            for (var p = pos - w; p <= pos + w; p ++) {
-                if (p < 0 || p >= str.length) {
-                    continue;
-                }
-                ctx += p === pos ? '⌜' + str[p] + '⌟' : str[p];
-            }
-            ctx = (pos > w ? '...' : '') + ctx + (pos < str.length - w - 1 ? '...' : '');
-            e = (type || SyntaxError)(e + ' near ' + ctx.trim() + ' @ ' + op.location());
-            e.$info = op.info();
-            return e;
+        op.error = function (err, type) {
+            err = (type || SyntaxError)(err);
+            err.$info = op.info();
+            return err;
         };
 
         /**
