@@ -22,7 +22,7 @@ function jh__shell (jh) {
                     return '  ▶┇ ';
                 })(),
                 err: (function () {
-                    return '  ■┇ Error: ';
+                    return '  ■┇ ';
                 })()
             }
         });
@@ -57,9 +57,9 @@ function jh__shell (jh) {
             console.error(jh.style(jh.$shell.prompt.err + x, jh.$shell.colors.err));
         }
 
-        rl.on('line', function (str) {
+        rl.on('line', function (input) {
             if (more) {
-                str = buffer + '\n' + str;
+                input = buffer + '\n' + input;
                 more = false;
             }
             else {
@@ -68,26 +68,24 @@ function jh__shell (jh) {
             try {
                 var code, showTokens = false, showCode = false;
 
-                if (str.substr(0, 2) === 't!') {
-                    code = jh.tokenize(str.substr(2));
+                if (input.substr(0, 2) === 't!') {
+                    input = input.substr(2);
                     showTokens = true;
                 }
 
-                else if (str.substr(0, 2) === 'c!') {
-                    code = jh.tokenize(str.substr(2));
+                else if (input.substr(0, 2) === 'c!') {
+                    input = input.substr(2);
                     showCode = true;
                 }
 
-                else {
-                    code = jh.tokenize(str);
-                }
+                code = jh.tokenize(input);
 
                 /**
                  * Accumulate more as needed until all blocks are closed
                  */
                 if (typeof code === 'string') {
                     more = true;
-                    buffer = str;
+                    buffer = input;
                     rl.setPrompt(jh.style(jh.$shell.prompt.part, jh.$shell.colors.part) + code + ' ∙∙∙ ');
                     rl.prompt();
                     return;
@@ -107,8 +105,8 @@ function jh__shell (jh) {
                     }
                 }
             }
-            catch (e) {
-                print_err(jh.error.format(e));
+            catch (err) {
+                print_err(jh.error.format(input, err));
             }
             rl.setPrompt(jh.style(jh.$shell.prompt.in, jh.$shell.colors.in));
             rl.prompt();

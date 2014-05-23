@@ -1,15 +1,8 @@
 function jh__stringloop (jh) {
 
     return function jh__stringloop (str, cb) {
-        var info = {pos: 0, line: 1, col: 0}, nl, pos, advance = 0;
+        var info = {line: 1, col: 0}, nl, pos, advance = 0;
         var op = {};
-
-        /**
-         * Copy info
-         */
-        op.info = function () {
-            return JSON.parse(JSON.stringify(info));
-        };
 
         /**
          * Get formatted location
@@ -19,11 +12,19 @@ function jh__stringloop (jh) {
         };
 
         /**
+         * Get position
+         */
+        op.position = function () {
+            return pos;
+        }
+
+        /**
          * Report a syntax error
          */
         op.error = function (err, type) {
             err = (type || SyntaxError)(err);
-            err.$info = op.info();
+            err.$pos = pos;
+            err.$loc = op.location();
             return err;
         };
 
@@ -54,7 +55,6 @@ function jh__stringloop (jh) {
              * Update line and column info
              */
             if (nl) { info.col = 0; info.line ++; nl = false; }
-            info.pos = pos;
             info.col += 1;
             if (str[pos] === '\n') { nl = true; }
 
