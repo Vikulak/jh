@@ -9,6 +9,7 @@ module.exports = (function (jh) {
     #include jh.colors;
     #include jh.command;
     #include jh.error.format;
+    #include jh.exec;
     #include jh.fn;
     #include jh.include;
     #include jh.shell;
