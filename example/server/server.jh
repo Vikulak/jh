@@ -1,0 +1,9 @@
+port: 8080
+
+=http.listen -port $port
+    -attach /users =inc api/users.jh;
+    -attach /items =inc api/items.jh;
+
+    -log =out -prefix "[Server]";
+
+=out Server Started on $port
