@@ -5,14 +5,9 @@ module.exports = function type__object (jh) {
         command: {
 
             execute: {
-                options: {
-                    'code': {
-                        short: 'c',
-                        required: true
-                    }
-                },
+                options: jh.exec.options,
                 fn: function (scope, options) {
-                    return JSON.stringify(options.code);
+                    return jh.exec.fn(scope, options);
                 }
             }
 

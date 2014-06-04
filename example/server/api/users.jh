@@ -1,0 +1,7 @@
+GET /: {
+    =json [(data: This is a user)]
+}
+
+GET /<id>: {
+    =json (data: This is a user with id $id)
+}

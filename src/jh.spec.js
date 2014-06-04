@@ -20,24 +20,24 @@ function jh__spec (jh) {
 
     def('global',       { error: ['}', ']', ')'] }              );
 
-    def('comment',      { open: '#', close: '\n' }              );
+    def('comment',      { open: '#', close: '\n', error: [] }   );
 
     def('escape',       { open: '\\', capture: 1 }              );
 
-    def('variable',     { open: '$', restrict: ['escape'],
-                          until: [' ', '\n', ':'], close: ';' } );
+    def('variable',     { open: '$', restrict: ['escape', 'object', 'array', 'deferred'],
+                          until: [' ', '\n', ':', ','], close: ';' } );
 
     def('command',      { open: '=', restrict: ['escape'],
-                          until: [' ', '\n', ':'] }             );
+                          until: [' ', '\n', ':', ','] }        );
 
     def('option',       { open: '-', restrict: ['escape'],
-                          until: [' ', '\n', ':'] }             );
+                          until: [' ', '\n', ':', ','] }        );
 
-    def('object',       { open: '{', close: '}' }               );
+    def('deferred',     { open: '{', close: '}' }               );
 
     def('array',        { open: '[', close: ']' }               );
 
-    def('group',        { open: '(', close: ')' }               );
+    def('object',       { open: '(', close: ')' }               );
 
     def('break',        { self: ',' }                           );
 
@@ -48,7 +48,7 @@ function jh__spec (jh) {
     def('include',      { self: '&' }                           );
 
     def('string',       { open: ['"""', "'''", '"', "'"],
-                          closeIdentical: true,
+                          closeIdentical: true, error: [],
                           restrict: ['escape', 'variable'] }    );
 
     return spec;

@@ -9,6 +9,7 @@ function jh__tokenize (jh) {
          * o: open
          * _: branches
          * $: location
+         * $$: position
          */
         var tree = new jh.treestack({'m': 'global'});
         var key, testSpec, match, capture = 0, current;
@@ -22,7 +23,7 @@ function jh__tokenize (jh) {
                 function () {
                     var location = op.location();
                     return function (x) {
-                        return {'m': 'expr', 'o': x, '$': location};
+                        return {'m': 'expr', 'o': x, '$': location, '$$': op.position()};
                     };
                 }
             );
@@ -99,14 +100,14 @@ function jh__tokenize (jh) {
                      */
                     match = op.match(testSpec.self);
                     if (match) {
-                        tree.branch({'m': key, 'o': match, '$': op.location()});
+                        tree.branch({'m': key, 'o': match, '$': op.location(), '$$': op.position()});
                         return tree.up();
                     }
                 }
                 else if (testSpec.open) {
                     match = op.match(testSpec.open);
                     if (match) {
-                        tree.branch({'m': key, 'o': match, '$': op.location()});
+                        tree.branch({'m': key, 'o': match, '$': op.location(), '$$': op.position()});
 
                         if (testSpec.capture) {
                             capture = testSpec.capture;
@@ -143,9 +144,16 @@ function jh__tokenize (jh) {
         current = jh.spec[tree.get('m')];
 
         /**
-         * If ending where a \n will close, do it
+         * If ending where a \n will close, do it (until)
          */
         if (current.until && current.until.indexOf('\n') !== -1) {
+            tree.up();
+        }
+
+        /**
+         * If ending where a \n will close, do it (close)
+         */
+        else if (current.close && current.close.indexOf('\n') !== -1) {
             tree.up();
         }
 
