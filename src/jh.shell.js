@@ -4,6 +4,7 @@ function jh__shell (jh) {
         /**
          * Default Shell Variables
          */
+        jh.$shellSimple = true;
         jh.$shell = jh.fn.defaults(jh.$shell, {
             colors: {
                 in:     jh.colors.grey,
@@ -13,15 +14,23 @@ function jh__shell (jh) {
             },
             prompt: {
                 in: (function () {
+                    if (jh.$shellSimple) return 'jh | ';
                     return 'jh ┇ ';
                 })(),
                 part: (function () {
+                    if (jh.$shellSimple) return '   | ';
                     return '   ┇ ';
                 })(),
+                ellipsis: (function () {
+                    if (jh.$shellSimple) return ' ... ';
+                    return ' ··· ';
+                })(),
                 out: (function () {
+                    if (jh.$shellSimple) return '  >| ';
                     return '  ▶┇ ';
                 })(),
                 err: (function () {
+                    if (jh.$shellSimple) return '  x| ';
                     return '  ■┇ ';
                 })()
             }
@@ -86,7 +95,7 @@ function jh__shell (jh) {
                 if (typeof code === 'string') {
                     more = true;
                     buffer = input;
-                    rl.setPrompt(jh.style(jh.$shell.prompt.part, jh.$shell.colors.part) + code + ' ∙∙∙ ');
+                    rl.setPrompt(jh.style(jh.$shell.prompt.part, jh.$shell.colors.part) + code + jh.$shell.prompt.ellipsis);
                     rl.prompt();
                     return;
                 }
